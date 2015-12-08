@@ -194,7 +194,7 @@ public class ProfileFragment extends Fragment {
 
             @Override
             protected void onPostExecute(String res) {
-                System.out.println(res);
+
                 profileSetting(res);
             }
         };

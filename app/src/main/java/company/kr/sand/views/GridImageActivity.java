@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.SpannableString;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -19,6 +20,8 @@ import company.kr.sand.controller.AppController;
 import company.kr.sand.data.FeedItem;
 
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by User on 2015-11-12.
@@ -66,7 +69,19 @@ public class GridImageActivity extends Activity {
 
         // Chcek for empty status message
         if (!TextUtils.isEmpty(item.getStatus())) {
-            statusMsg.setText(item.getStatus());
+            String body=item.getStatus();
+            SpannableString contents=new SpannableString(body);
+            ArrayList<int[]> hashSpan=getSpans(body,'#');
+
+            for(int index=0; index<hashSpan.size();index++){
+                int[] span = hashSpan.get(index);
+                int hashStart=span[0];
+                int hashEnd=span[1];
+
+                contents.setSpan(new Hashtag(GridImageActivity.this),hashStart,hashEnd,0);
+            }
+
+            statusMsg.setText(contents);
             statusMsg.setVisibility(View.VISIBLE);
         } else {
             // status is empty, remove from view
@@ -169,4 +184,23 @@ public class GridImageActivity extends Activity {
             }
         });
     }
+
+    public ArrayList<int[]> getSpans(String body, char prefix) {
+        ArrayList<int[]> spans = new ArrayList<int[]>();
+
+        Pattern pattern = Pattern.compile(prefix + "\\w+");
+        Matcher matcher = pattern.matcher(body);
+
+        // Check all occurrences
+        while (matcher.find()) {
+            int[] currentSpan = new int[2];
+            currentSpan[0] = matcher.start();
+            currentSpan[1] = matcher.end();
+            spans.add(currentSpan);
+        }
+
+        return  spans;
+    }
+
+
 }

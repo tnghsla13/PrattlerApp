@@ -115,7 +115,6 @@ public class LoginActivity extends FragmentActivity {
                     mOAuthLoginInstance.init(mContext, getResources().getString(company.kr.sand.R.string.naver_app_id),
                             getResources().getString(company.kr.sand.R.string.naver_app_secret), getResources().getString(R.string.app_name));
 
-
                     naverLoginPrecessInit();
 
                     REDUNDANCY_CHECK = false;
@@ -125,8 +124,7 @@ public class LoginActivity extends FragmentActivity {
                         @Override
                         public void onClick(View v) {
 
-                            System.out.println("onclick");
-                            fuckingMento("1");
+
                         }
                     });
 
@@ -668,7 +666,7 @@ public class LoginActivity extends FragmentActivity {
             @Override
             protected void onPostExecute(String res) {
 
-                System.out.println(res);
+
 
                 if (res.equals(ACCOUNT_NOT_EXIST)) setFragment(1);
 
@@ -712,77 +710,5 @@ public class LoginActivity extends FragmentActivity {
     protected void onResume() {
         super.onResume();
 
-
     }
-
-    private void fuckingMento(final String admin) {
-
-        final ProgressDialog progressDialog = new ProgressDialog(mContext);
-        AsyncTask<Void, Void, String> async_interact = new AsyncTask<Void, Void, String>() {
-
-            @Override
-            protected void onPreExecute() {
-            }
-
-            @Override
-            protected String doInBackground(Void... params) {
-
-                String url = null;
-                URL urlCon = null;
-                String response = null;
-
-                try{
-
-                    url = "http://prattler.azurewebsites.net/sandserverside.php";
-                    urlCon = new URL(url);
-                    httpURLConnection = (HttpURLConnection) urlCon.openConnection();
-
-                    if (httpURLConnection != null) {
-
-                        httpURLConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-                        httpURLConnection.setRequestMethod("POST");
-                        httpURLConnection.setDoOutput(true);
-                        httpURLConnection.setDoInput(true);
-                        httpURLConnection.setUseCaches(false);
-                        httpURLConnection.setDefaultUseCaches(false);
-
-                        os = httpURLConnection.getOutputStream();
-                        bw = new BufferedWriter(new OutputStreamWriter(os, "utf-8"));
-
-                        bw.write("id=1&type=login");
-                        bw.flush();
-
-                        is = httpURLConnection.getInputStream();
-                        br = new BufferedReader(new InputStreamReader(is, "utf-8"));
-
-                        response = br.readLine();
-                    }
-
-                }catch (Exception e){
-
-                    e.printStackTrace();
-                }
-
-
-                return response;
-            }
-
-            @Override
-            protected void onPostExecute(String res) {
-                System.out.println(res);
-                if(res.equals(ACCOUNT_EXIST)){
-
-                    Toast.makeText(mContext, "가입된  계정", Toast.LENGTH_SHORT).show();
-                    Intent it_next = new Intent(LoginActivity.this, MainActivity.class);
-                    startActivity(it_next);
-                    finish();
-
-                }
-            }
-        };
-
-        async_interact.execute();
-    }
-
-
 }

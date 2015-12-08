@@ -48,7 +48,6 @@ public class ReplyListAdapter extends BaseAdapter {
 
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        System.out.println("getView()");
         if (inflater == null)
             inflater =
                     (LayoutInflater) parent.getContext()
@@ -70,7 +69,6 @@ public class ReplyListAdapter extends BaseAdapter {
             body.setText(item.getBody());
 
             profilePic.setImageUrl(item.getProfilePic(), imageLoader);
-            System.out.println(item.getName());
 
         } else {
 

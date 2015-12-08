@@ -99,7 +99,7 @@ public class WriteFragment extends Fragment {
 
                 SharedPreferences mPref=getActivity().getSharedPreferences("ID", Context.MODE_PRIVATE);
                 String userid=mPref.getString("remain",null);
-                System.out.println(mPref.getString("remain",null));
+
                 // http conntection
                 URL url = new URL(urlstr+"?userid="+userid+"&taste="+String.valueOf(cur_taste)+"&quantity="+String.valueOf(cur_quantity)
                         +"&performance="+String.valueOf(cur_performance)+"&body="+URLEncoder.encode(body,"utf-8"));
@@ -122,7 +122,7 @@ public class WriteFragment extends Fragment {
 
                 if(imagePath!=null){
 
-                    System.out.println(imagePath);
+
                     fis = new FileInputStream(imagePath);
                     writeImage(imagePath);
 
@@ -135,9 +135,6 @@ public class WriteFragment extends Fragment {
                 StringBuilder inputLine = new StringBuilder();
                 String input;
 
-                while((input = in.readLine()) != null) {
-                    System.out.println(input);
-                }
 
             } catch (MalformedURLException ex) {
                 Log.d("asdf","malform");

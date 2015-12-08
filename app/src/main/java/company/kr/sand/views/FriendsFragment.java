@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ListView;
 
 import company.kr.sand.R;
@@ -39,6 +40,7 @@ public class FriendsFragment extends Fragment {
     private FeedListAdapter listAdapter;
     private List<FeedItem> feedItems;
     private String URL_FEED = "http://prattler.azurewebsites.net/feed1.php";
+
 
     public FriendsFragment() {
     }
@@ -163,7 +165,7 @@ public class FriendsFragment extends Fragment {
 
             @Override
             protected void onPostExecute(String res) {
-                System.out.println(res);
+
                 try {
                     parseJsonFeed(new JSONObject(res));
                 } catch (JSONException e) {

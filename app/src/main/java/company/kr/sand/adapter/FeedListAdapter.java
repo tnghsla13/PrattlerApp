@@ -2,12 +2,14 @@ package company.kr.sand.adapter;
 
 import android.app.Activity;
 import android.content.Context;
+import android.text.SpannableString;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -18,8 +20,13 @@ import company.kr.sand.views.FeedImageView;
 import company.kr.sand.controller.AppController;
 import company.kr.sand.data.FeedItem;
 import company.kr.sand.R;
+import company.kr.sand.views.Hashtag;
+import company.kr.sand.views.ReplyDialog;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by User on 2015-11-01.
@@ -29,6 +36,8 @@ public class FeedListAdapter extends BaseAdapter {
     private LayoutInflater inflater;
     private List<FeedItem> feedItems;
     ImageLoader imageLoader = AppController.getInstance().getImageLoader();
+    private Button btn_reply;
+    FeedItem item;
 
     public FeedListAdapter(Activity activity, List<FeedItem> feedItems) {
         this.activity = activity;
@@ -73,7 +82,7 @@ public class FeedListAdapter extends BaseAdapter {
         FeedImageView feedImageView = (FeedImageView) convertView
                 .findViewById(R.id.feedImage1);
 
-        FeedItem item = feedItems.get(position);
+        item = feedItems.get(position);
 
         name.setText(item.getName());
 
@@ -85,7 +94,19 @@ public class FeedListAdapter extends BaseAdapter {
 
         // Chcek for empty status message
         if (!TextUtils.isEmpty(item.getStatus())) {
-            statusMsg.setText(item.getStatus());
+            String body=item.getStatus();
+            SpannableString contents=new SpannableString(body);
+            ArrayList<int[]> hashSpan=getSpans(body,'#');
+
+            for(int index=0; index<hashSpan.size();index++){
+                int[] span = hashSpan.get(index);
+                int hashStart=span[0];
+                int hashEnd=span[1];
+
+                contents.setSpan(new Hashtag(parent.getContext()),hashStart,hashEnd,0);
+            }
+
+            statusMsg.setText(contents);
             statusMsg.setVisibility(View.VISIBLE);
         } else {
             // status is empty, remove from view
@@ -163,7 +184,45 @@ public class FeedListAdapter extends BaseAdapter {
             feedImageView.setVisibility(View.GONE);
         }
 
+
+
         return convertView;
     }
+
+    public ArrayList<int[]> getSpans(String body, char prefix) {
+        ArrayList<int[]> spans = new ArrayList<int[]>();
+
+        Pattern pattern = Pattern.compile(prefix + "\\w+");
+        Matcher matcher = pattern.matcher(body);
+
+        // Check all occurrences
+        while (matcher.find()) {
+            int[] currentSpan = new int[2];
+            currentSpan[0] = matcher.start();
+            currentSpan[1] = matcher.end();
+            spans.add(currentSpan);
+        }
+
+        return  spans;
+    }
+
+    private void setReplyBtn(){
+
+        btn_reply=(Button)activity.findViewById(R.id.btn_reply);
+        btn_reply.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+//                Dialog dialog=new Dialog(GridImageActivity.this);
+//                dialog.setContentView(R.layout.reply_dialog);
+//                dialog.show();
+
+                new ReplyDialog(activity,item, activity.getSharedPreferences("ID",activity.MODE_PRIVATE).getString("remain",null)).show();
+
+            }
+        });
+    }
+
+
 
 }

@@ -35,25 +35,25 @@ import company.kr.sand.data.ReplyItem;
 /**
  * Created by Prattler on 2015-12-01.
  */
-public class ReplyDialog extends Dialog  {
+public class ReplyDialog extends Dialog {
 
 
     private Context mContext;
     private Button btn_reply_in;
     private EditText et_reply;
     private FeedItem feedItem;
-    private String id,body;
+    private String id, body;
 
     private ReplyListAdapter listAdapter;
     private ListView listView;
     ArrayList<ReplyItem> replyItems;
 
 
-    public ReplyDialog(Context context, FeedItem feed,String id) {
+    public ReplyDialog(Context context, FeedItem feed, String id) {
         super(context);
-        this.mContext=context;
-        this.feedItem=feed;
-        this.id=id;
+        this.mContext = context;
+        this.feedItem = feed;
+        this.id = id;
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         //getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
     }
@@ -67,9 +67,9 @@ public class ReplyDialog extends Dialog  {
         receiveFromWebServer();
     }
 
-    private void setView(){
-        btn_reply_in=(Button)findViewById(R.id.btn_reply_in);
-        et_reply=(EditText)findViewById(R.id.et_reply);
+    private void setView() {
+        btn_reply_in = (Button) findViewById(R.id.btn_reply_in);
+        et_reply = (EditText) findViewById(R.id.et_reply);
 
 
         btn_reply_in.setOnClickListener(new View.OnClickListener() {
@@ -79,7 +79,7 @@ public class ReplyDialog extends Dialog  {
                 body = et_reply.getText().toString();
                 et_reply.setText("");
                 sendToWebServer();
-                InputMethodManager imm= (InputMethodManager)mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
+                InputMethodManager imm = (InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
 
                 imm.hideSoftInputFromWindow(btn_reply_in.getWindowToken(), 0);
 
@@ -90,17 +90,17 @@ public class ReplyDialog extends Dialog  {
 
     }
 
-    private void sendToWebServer(){
+    private void sendToWebServer() {
 
-        AsyncTask<Void,Void,String> async_send=new AsyncTask<Void, Void, String>() {
+        AsyncTask<Void, Void, String> async_send = new AsyncTask<Void, Void, String>() {
 
             @Override
             protected String doInBackground(Void... params) {
 
-                try{
-                    String url="http://prattler.azurewebsites.net/send.php";
-                    URL urlCon=new URL(url);
-                    HttpURLConnection httpURLConnection=(HttpURLConnection)urlCon.openConnection();
+                try {
+                    String url = "http://prattler.azurewebsites.net/send.php";
+                    URL urlCon = new URL(url);
+                    HttpURLConnection httpURLConnection = (HttpURLConnection) urlCon.openConnection();
 
 
                     if (httpURLConnection != null) {
@@ -121,16 +121,12 @@ public class ReplyDialog extends Dialog  {
                         InputStream is = httpURLConnection.getInputStream();
                         BufferedReader br = new BufferedReader(new InputStreamReader(is, "utf-8"));
 
-                        System.out.println(br.readLine());
-
-
                     }
 
 
-                }catch(Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
-
 
 
                 return null;
@@ -146,9 +142,9 @@ public class ReplyDialog extends Dialog  {
         async_send.execute();
     }
 
-    private void receiveFromWebServer(){
+    private void receiveFromWebServer() {
 
-        AsyncTask<String,Void,String> async_receive=new AsyncTask<String, Void, String>() {
+        AsyncTask<String, Void, String> async_receive = new AsyncTask<String, Void, String>() {
 
             @Override
             protected String doInBackground(String... Params) {
@@ -195,7 +191,7 @@ public class ReplyDialog extends Dialog  {
 
             @Override
             protected void onPostExecute(String res) {
-                System.out.println(res);
+
                 try {
                     parseJsonFeed(new JSONArray(res));
                 } catch (JSONException e) {
@@ -221,20 +217,19 @@ public class ReplyDialog extends Dialog  {
                         .getString("imagepath")).substring(1));
 
 
-
                 replyItems.add(item);
 
 
             }
 
-            listAdapter = new ReplyListAdapter((Activity)mContext,replyItems);
+            listAdapter = new ReplyListAdapter((Activity) mContext, replyItems);
             listView.setAdapter(listAdapter);
 
             // notify data changes to list adapater
             listAdapter.notifyDataSetChanged();
         } catch (JSONException e) {
             e.printStackTrace();
-        }catch (Exception e){
+        } catch (Exception e) {
 
             e.printStackTrace();
         }
